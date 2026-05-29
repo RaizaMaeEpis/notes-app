@@ -2,47 +2,156 @@
 
 @section('content')
 
-    <div class="relative max-w-2xl mx-auto mb-12">
-        <form action="{{ route('notes.index') }}" method="GET">
-            <input type="text" name="search" value="{{ request('search') }}" 
-                   placeholder="Search notes by title or content..." 
-                   class="w-full pl-12 pr-4 py-4 rounded-full border-none shadow-xl focus:ring-4 focus:ring-purple-200 transition text-lg">
-            <span class="absolute left-4 top-4 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </span>
-        </form>
-    </div>
+<style>
+    /* Search */
+    .search-wrap { position: relative; margin-bottom: 24px; }
+    .search-input {
+        width: 100%; padding: 14px 18px 14px 48px;
+        border-radius: 16px; border: 2px solid #EDE9FE;
+        background: white; font-size: 15px; color: #374151;
+        outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(108,63,232,0.06);
+        font-family: 'DM Sans', sans-serif;
+    }
+    .search-input:focus { border-color: #6C3FE8; box-shadow: 0 0 0 4px rgba(108,63,232,0.1); }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #A78BFA; }
 
-    <h2 class="text-3xl font-bold text-slate-800 mb-8 border-b-2 border-purple-100 pb-2 inline-block">Your Collection</h2>
+    /* Section header */
+    .section-header {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 16px;
+    }
+    .section-title { font-size: 20px; font-weight: 700; color: #1F2937; font-family: 'Sora', sans-serif; }
+    .notes-count {
+        background: #EDE9FE; color: #6C3FE8;
+        font-size: 12px; font-weight: 600;
+        padding: 4px 10px; border-radius: 99px;
+    }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @forelse($notes as $note)
-            <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition duration-300 overflow-hidden border border-gray-100 group">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-purple-600 transition">{{ $note->title }}</h3>
-                    <p class="text-gray-600 line-clamp-3 leading-relaxed">{{ $note->content }}</p>
-                </div>
-                <div class="bg-gray-50 p-4 border-t border-gray-100 flex justify-end space-x-3">
-                    <a href="{{ route('notes.edit', $note) }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Edit</a>
-                    <form action="{{ route('notes.destroy', $note) }}" method="POST" onsubmit="return confirm('Delete this note?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-sm font-semibold text-red-500 hover:text-red-700">Delete</button>
-                    </form>
-                </div>
+    /* Note cards */
+    .notes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+    @media (max-width: 640px) {
+        .notes-grid { grid-template-columns: 1fr; gap: 12px; }
+    }
+
+    .note-card {
+        background: white; border-radius: 20px;
+        border: 1.5px solid #EDE9FE;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(108,63,232,0.06);
+    }
+    .note-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(108,63,232,0.12); }
+
+    .note-card-accent {
+        height: 4px;
+        background: linear-gradient(90deg, #6C3FE8, #9B6DFF);
+    }
+    .note-card:nth-child(2) .note-card-accent { background: linear-gradient(90deg, #EC4899, #F97316); }
+    .note-card:nth-child(3) .note-card-accent { background: linear-gradient(90deg, #06B6D4, #3B82F6); }
+    .note-card:nth-child(4) .note-card-accent { background: linear-gradient(90deg, #10B981, #06B6D4); }
+    .note-card:nth-child(5) .note-card-accent { background: linear-gradient(90deg, #F59E0B, #EF4444); }
+    .note-card:nth-child(6) .note-card-accent { background: linear-gradient(90deg, #8B5CF6, #EC4899); }
+
+    .note-body { padding: 16px 18px; }
+    .note-title {
+        font-size: 16px; font-weight: 700; color: #1F2937;
+        margin-bottom: 8px; font-family: 'Sora', sans-serif;
+        display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .note-content {
+        font-size: 13px; color: #6B7280; line-height: 1.6;
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .note-footer {
+        padding: 12px 18px;
+        border-top: 1px solid #F5F3FF;
+        display: flex; justify-content: flex-end; gap: 8px;
+        background: #FAFAFE;
+    }
+    .btn-edit {
+        font-size: 13px; font-weight: 600; color: #6C3FE8;
+        padding: 6px 14px; border-radius: 99px;
+        background: #EDE9FE; text-decoration: none;
+        transition: background 0.15s;
+    }
+    .btn-edit:hover { background: #DDD6FE; }
+    .btn-delete {
+        font-size: 13px; font-weight: 600; color: #EF4444;
+        padding: 6px 14px; border-radius: 99px;
+        background: #FEE2E2; border: none; cursor: pointer;
+        transition: background 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-delete:hover { background: #FECACA; }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center; padding: 60px 20px;
+        background: white; border-radius: 24px;
+        border: 2px dashed #DDD6FE;
+    }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; }
+    .empty-title { font-size: 20px; font-weight: 700; color: #374151; margin-bottom: 8px; font-family: 'Sora', sans-serif; }
+    .empty-sub { font-size: 14px; color: #9CA3AF; margin-bottom: 24px; }
+    .empty-btn {
+        display: inline-block; background: #6C3FE8; color: white;
+        padding: 12px 28px; border-radius: 99px; font-weight: 700;
+        text-decoration: none; font-size: 14px;
+        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 4px 16px rgba(108,63,232,0.3);
+    }
+    .empty-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(108,63,232,0.4); }
+</style>
+
+<!-- Search -->
+<div class="search-wrap">
+    <form action="{{ route('notes.index') }}" method="GET">
+        <span class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </span>
+        <input type="text" name="search" value="{{ request('search') }}"
+               placeholder="Search notes..." class="search-input">
+    </form>
+</div>
+
+<!-- Section header -->
+<div class="section-header">
+    <span class="section-title">Your Collection</span>
+    <span class="notes-count">{{ $notes->count() }} notes</span>
+</div>
+
+<!-- Notes grid -->
+<div class="notes-grid">
+    @forelse($notes as $note)
+        <div class="note-card">
+            <div class="note-card-accent"></div>
+            <div class="note-body">
+                <div class="note-title">{{ $note->title }}</div>
+                <div class="note-content">{{ $note->content }}</div>
             </div>
-        @empty
-            <div class="col-span-full py-20 text-center">
-                <div class="bg-white p-12 rounded-3xl border-2 border-dashed border-purple-200 inline-block shadow-inner">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-purple-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <h3 class="text-2xl font-bold text-gray-700 mb-2">Start your first note, {{ auth()->user()->name }}!</h3>
-                    <a href="{{ route('notes.create') }}" class="text-purple-600 font-semibold hover:underline">Click here to begin &rarr;</a>
-                </div>
+            <div class="note-footer">
+                <a href="{{ route('notes.edit', $note) }}" class="btn-edit">Edit</a>
+                <form action="{{ route('notes.destroy', $note) }}" method="POST" onsubmit="return confirm('Delete this note?')">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn-delete">Delete</button>
+                </form>
             </div>
-        @endforelse
-    </div>
+        </div>
+    @empty
+        <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-icon">📓</div>
+            <div class="empty-title">Start your first note, {{ auth()->user()->name }}!</div>
+            <div class="empty-sub">Capture your thoughts, ideas, and everything in between.</div>
+            <a href="{{ route('notes.create') }}" class="empty-btn">+ Create Note</a>
+        </div>
+    @endforelse
+</div>
+
 @endsection
