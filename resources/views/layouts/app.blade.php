@@ -1,41 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#0f172a">
-  ...other head tags...
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#6C3FE8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  ...your page content...
-  <!-- Step F: Install button -->
-  <button id="installBtn"
-    class="hidden bg-indigo-600 text-white px-4 py-2 rounded">
-    Install App
-  </button>
-  <!-- Step G: Install prompt script -->
-  <script>
-  let deferredPrompt;
-  const installBtn = document.getElementById('installBtn');
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.classList.remove('hidden');
-  });
-  installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const result = await deferredPrompt.userChoice;
-    if (result.outcome === 'accepted') {
-      installBtn.classList.add('hidden');
+<body class="font-sans antialiased bg-gray-50">
+    <div class="min-h-screen">
+        @include('layouts.navigation')
+        <main>
+            {{ $slot }}
+        </main>
+    </div>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
     }
-    deferredPrompt = null;
-  });
-  </script>
-  <!-- Step D: service worker script -->
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-  }
-  </script>
+    </script>
 </body>
 </html>
