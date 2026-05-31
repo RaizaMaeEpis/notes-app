@@ -30,6 +30,7 @@
     }
     .note-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30, 64, 175, 0.1); }
     
+    /* Harmonized cool blue card accents based on original architecture */
     .note-card-accent { height: 4px; background: linear-gradient(90deg, #1E40AF, #3B82F6); }
     .note-card:nth-child(2) .note-card-accent { background: linear-gradient(90deg, #06B6D4, #3B82F6); }
     .note-card:nth-child(3) .note-card-accent { background: linear-gradient(90deg, #10B981, #06B6D4); }
@@ -57,20 +58,20 @@
 
 <div class="search-wrap">
     <form action="{{ route('notes.index') }}" method="GET" role="search">
-        <label for="searchInput" class="sr-only">Search artwork</label>
+        <label for="searchInput" class="sr-only">Search notes</label>
         <span class="search-icon" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
         </span>
         <input type="text" id="searchInput" name="search" value="{{ request('search') }}"
-               placeholder="Search your gallery creations..." class="search-input" aria-label="Search artwork">
+               placeholder="Search notes..." class="search-input" aria-label="Search notes">
     </form>
 </div>
 
 <div class="section-header">
-    <h2 class="section-title">Your Studio Collection</h2>
-    <span class="notes-count" aria-label="{{ $notes->count() }} creations">{{ $notes->count() }} creations</span>
+    <h2 class="section-title">Your Collection</h2>
+    <span class="notes-count" aria-label="{{ $notes->count() }} notes">{{ $notes->count() }} notes</span>
 </div>
 
 <div class="notes-grid" role="list">
@@ -82,20 +83,20 @@
                 <p class="note-content">{{ $note->content }}</p>
             </div>
             <div class="note-footer">
-                <a href="{{ route('notes.edit', $note) }}" class="btn-edit" aria-label="Edit project: {{ $note->title }}">Edit</a>
-                <form action="{{ route('notes.destroy', $note) }}" method="POST" onsubmit="return confirm('Remove this piece from your gallery?')">
+                <a href="{{ route('notes.edit', $note) }}" class="btn-edit" aria-label="Edit note: {{ $note->title }}">Edit</a>
+                <form action="{{ route('notes.destroy', $note) }}" method="POST" onsubmit="return confirm('Delete this note?')">
                     @csrf
                     @method('DELETE')
-                    <button class="btn-delete" aria-label="Delete project: {{ $note->title }}">Remove</button>
+                    <button class="btn-delete" aria-label="Delete note: {{ $note->title }}">Delete</button>
                 </form>
             </div>
         </article>
     @empty
         <div class="empty-state" style="grid-column: 1 / -1;">
-            <div class="empty-icon" aria-hidden="true">🎨</div>
-            <h3 class="empty-title">Welcome to your studio, {{ auth()->user()->name }}!</h3>
-            <p class="empty-sub">Start archiving your inspirations, project concepts, and art journals here.</p>
-            <a href="{{ route('notes.create') }}" class="empty-btn" aria-label="Log your first creative piece">+ Create Artwork Note</a>
+            <div class="empty-icon" aria-hidden="true">📓</div>
+            <h3 class="empty-title">Start your first note, {{ auth()->user()->name }}!</h3>
+            <p class="empty-sub">Capture your thoughts, ideas, and everything in between.</p>
+            <a href="{{ route('notes.create') }}" class="empty-btn" aria-label="Create your first note">+ Create Note</a>
         </div>
     @endforelse
 </div>

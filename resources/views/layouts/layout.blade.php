@@ -152,7 +152,7 @@
             <div class="flex justify-between items-center h-16">
 
                 <a href="{{ route('notes.index') }}" aria-label="Art App Home" class="brand text-white text-xl font-extrabold tracking-tight italic" style="text-decoration:none;">
-                    🎨 Art App
+                    ✦ Art App
                 </a>
 
                 <div class="flex items-center gap-3">
@@ -161,8 +161,8 @@
                         ⬇ Install
                     </button>
 
-                    <a href="{{ route('notes.create') }}" class="desktop-only bg-white text-blue-700 px-4 py-2 rounded-full font-bold text-sm hover:bg-blue-50 transition" style="text-decoration:none;" aria-label="Create new artwork">
-                        + New Artwork
+                    <a href="{{ route('notes.create') }}" class="desktop-only bg-white text-blue-700 px-4 py-2 rounded-full font-bold text-sm hover:bg-blue-50 transition" style="text-decoration:none;" aria-label="Add new note">
+                        + Add Note
                     </a>
 
                     <div class="profile-dropdown">
@@ -176,7 +176,7 @@
                             </div>
                             <a href="{{ route('profile.edit') }}" role="menuitem" aria-label="My Profile">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                My Gallery Profile
+                                My Profile
                             </a>
                             <div class="divider" role="separator"></div>
                             <form method="POST" action="{{ route('logout') }}">
@@ -207,9 +207,9 @@
         <div class="bottom-nav-items">
             <a href="{{ route('notes.index') }}" class="bottom-nav-item active" aria-label="Home">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                Gallery
+                Home
             </a>
-            <a href="{{ route('notes.create') }}" class="bottom-nav-add" aria-label="Create new artwork">
+            <a href="{{ route('notes.create') }}" class="bottom-nav-add" aria-label="Add new note">
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
             </a>
             <a href="{{ route('profile.edit') }}" class="bottom-nav-item" aria-label="Profile">
