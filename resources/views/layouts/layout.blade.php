@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artisan Canvas</title>
+    <title>Art App</title>
 
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1E40AF">
@@ -151,8 +151,8 @@
         <div class="max-w-5xl mx-auto px-4">
             <div class="flex justify-between items-center h-16">
 
-                <a href="{{ route('notes.index') }}" aria-label="Artisan Canvas Home" class="brand text-white text-xl font-extrabold tracking-tight italic" style="text-decoration:none;">
-                    🎨 Artisan Canvas
+                <a href="{{ route('notes.index') }}" aria-label="Art App Home" class="brand text-white text-xl font-extrabold tracking-tight italic" style="text-decoration:none;">
+                    🎨 Art App
                 </a>
 
                 <div class="flex items-center gap-3">

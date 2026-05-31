@@ -30,7 +30,6 @@
     }
     .note-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(30, 64, 175, 0.1); }
     
-    /* Elegant blue and complementary cool gradients for the card top accents */
     .note-card-accent { height: 4px; background: linear-gradient(90deg, #1E40AF, #3B82F6); }
     .note-card:nth-child(2) .note-card-accent { background: linear-gradient(90deg, #06B6D4, #3B82F6); }
     .note-card:nth-child(3) .note-card-accent { background: linear-gradient(90deg, #10B981, #06B6D4); }
